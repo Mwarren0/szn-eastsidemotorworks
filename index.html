@@ -1,42 +1,60 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Extreme Offroad Invoicing</title>
+  <title>Extreme Offroad Invoice Generator</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Generador de Facturas Offroad</h1>
+  <h1>Extreme Offroad Invoice Generator</h1>
 
   <section>
-    <h2>Cliente</h2>
-    <input type="text" id="cliente" placeholder="Nombre del cliente" />
+    <label>Employee:</label>
+    <input type="text" id="employee" placeholder="Enter employee name" />
   </section>
 
   <section>
-    <h2>Mejoras</h2>
-    <label><input type="checkbox" value="20000" /> Suspensión Deportiva</label><br />
-    <label><input type="checkbox" value="300000" /> Blindaje 100%</label>
+    <h2>Upgrade Categories</h2>
+
+    <!-- Category Block: Servicing -->
+    <div class="category">
+      <strong>Servicing</strong>
+      <div class="item">
+        <label><input type="checkbox" class="service" data-price="5000" /> Air Filter Replacement</label>
+        <input type="number" class="quantity" min="1" value="1" />
+      </div>
+      <div class="item">
+        <label><input type="checkbox" class="service" data-price="12000" /> Oil Service</label>
+        <input type="number" class="quantity" min="1" value="1" />
+      </div>
+    </div>
+
+    <!-- Category Block: Engine -->
+    <div class="category">
+      <strong>Engine</strong>
+      <div class="item">
+        <label><input type="checkbox" class="service" data-price="65000" /> Engine Swap</label>
+        <input type="number" class="quantity" min="1" value="1" />
+      </div>
+      <div class="item">
+        <label><input type="checkbox" class="service" data-price="45000" /> Performance Exhaust</label>
+        <input type="number" class="quantity" min="1" value="1" />
+      </div>
+    </div>
+
+    <!-- Add more categories similarly... -->
   </section>
 
-  <section>
-    <h2>Vehículo</h2>
-    <select id="vehiculo">
-      <option value="Ferrari F40|300000">Ferrari F40 V8 2.9L</option>
-      <option value="Aventador SV|300000">Aventador SV V12 6.5L</option>
-    </select>
-  </section>
-
-  <button onclick="generarFactura()">Generar Factura</button>
+  <button onclick="generateInvoice()">Generate Invoice</button>
 
   <section>
-    <h2>Registro de Facturas</h2>
-    <table id="facturas">
+    <h2>Invoice Log</h2>
+    <table id="invoices">
       <thead>
         <tr>
-          <th>Cliente</th>
-          <th>Vehículo</th>
-          <th>Mejoras</th>
+          <th>Employee</th>
+          <th>Service Types</th>
+          <th>Details</th>
           <th>Total</th>
         </tr>
       </thead>
