@@ -2,16 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>East Side Motorworks Invoice Generator</title>
+  <title>East Side Motorworks - Invoice Generator</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>East Side Motorworks Invoice Generator</h1>
+  <header>
+    <img src="eastside-logo.png" alt="East Side Motorworks Logo" />
+    <h1>Invoice Generator</h1>
+  </header>
 
-  <section>
-    <label>Employee:</label>
-    <input type="text" id="employee" placeholder="Enter employee name" />
-  </section>
+  <main>
+    <section class="input-box">
+      <label>Employee:</label>
+      <input type="text" id="employee" placeholder="Enter employee name" />
+    </section>
+
 
   <section>
     <h2>Upgrade Categories</h2>
@@ -134,22 +139,34 @@
     <!-- Add more categories similarly... -->
   </section>
 
-  <button onclick="generateInvoice()">Generate Invoice</button>
+   <section class="discount-box">
+      <h2>Discount</h2>
+      <input type="number" id="discountValue" placeholder="Enter discount" />
+      <select id="discountType">
+        <option value="amount">$ Amount</option>
+        <option value="percent">% Percent</option>
+      </select>
+      <button onclick="applyDiscount()">Apply Discount</button>
+      <p id="discountDisplay">No discount applied.</p>
+    </section>
 
-  <section>
-    <h2>Invoice Log</h2>
-    <table id="invoices">
-      <thead>
-        <tr>
-          <th>Employee</th>
-          <th>Service Types</th>
-          <th>Details</th>
-          <th>Total</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </section>
+    <button onclick="generateInvoice()">Generate Invoice</button>
+
+    <section>
+      <h2>Invoice Log</h2>
+      <table id="invoices">
+        <thead>
+          <tr>
+            <th>Employee</th>
+            <th>Service Types</th>
+            <th>Details</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </main>
 
   <script src="script.js"></script>
 </body>

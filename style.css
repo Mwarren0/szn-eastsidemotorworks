@@ -1,39 +1,111 @@
 body {
-  font-family: Arial, sans-serif;
-  background: #f9f9f9;
+  margin: 0;
+  background-color: #121212;
+  color: #e0ffe0;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  background-color: #00ff55;
+  padding: 10px 20px;
+  color: #000;
+}
+
+header img {
+  height: 60px;
+  margin-right: 20px;
+}
+
+h1 {
+  font-size: 28px;
+}
+
+main {
   padding: 20px;
 }
-h1, h2 {
-  color: #2c3e50;
-}
+
 section {
+  margin-bottom: 30px;
+}
+
+.input-box input {
+  width: 300px;
+  padding: 8px;
+}
+
+.category {
+  background-color: #1e1e1e;
+  border: 2px solid #00ff55;
+  padding: 15px;
   margin-bottom: 20px;
+  border-radius: 10px;
 }
-input[type="text"], input[type="number"] {
+
+.category h3 {
+  margin-top: 0;
+  color: #00ff55;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  gap: 10px;
+}
+
+.item label {
+  flex: 1;
+}
+
+input.quantity {
+  width: 60px;
   padding: 5px;
-  margin: 5px;
+  background-color: #222;
+  color: #0f0;
+  border: 1px solid #00ff55;
 }
+
 button {
   padding: 10px 20px;
-  background: #27ae60;
-  color: white;
+  background-color: #00ff55;
+  color: #000;
   border: none;
   cursor: pointer;
+  font-weight: bold;
+  border-radius: 5px;
 }
+
+.discount-box {
+  background-color: #1e1e1e;
+  border: 2px dashed #00ff55;
+  padding: 15px;
+  border-radius: 10px;
+  color: #e0ffe0;
+}
+
+.discount-box input,
+.discount-box select {
+  padding: 5px;
+  margin: 5px;
+  background-color: #222;
+  color: #0f0;
+  border: 1px solid #00ff55;
+}
+
+.discount-box button {
+  margin-top: 10px;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
+  background-color: #1e1e1e;
 }
+
 th, td {
-  border: 1px solid #ddd;
-  padding: 8px;
-}
-.category {
-  background: #fff;
-  border: 1px solid #ccc;
+  border: 1px solid #00ff55;
   padding: 10px;
-  margin-bottom: 10px;
-}
-.item {
-  margin: 5px 0;
+  text-align: left;
 }
