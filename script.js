@@ -70,7 +70,7 @@ function generateInvoice() {
   document.querySelector("#invoices tbody").appendChild(row);
 
   // 🖼 Discord embed format
-  fetch("https://discord.com/api/webhooks/TU_WEBHOOK_URL", {
+  fetch("https://discord.com/api/webhooks/1392217195953786962/rn3McMeacAiTIzjN1sNmTxF8iPYW3QDNlRpsaUFMoH61SmJl59fPgO4sjX6lQEvxzJAD", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
