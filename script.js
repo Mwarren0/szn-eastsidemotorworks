@@ -36,7 +36,7 @@ function generateInvoice() {
       services.push(`${name} ×${quantity} ($${subtotal})`);
       total += subtotal;
 
-      const category = item.closest(".category")?.querySelector("h3")?.textContent;
+      const category = item.closest(".category")?.querySelector("strong")?.textContent;
       if (category) categories.add(category);
     }
   });
