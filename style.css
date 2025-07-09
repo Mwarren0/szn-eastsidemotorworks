@@ -109,3 +109,46 @@ th, td {
   padding: 10px;
   text-align: left;
 }
+
+.preview-box {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #1e1e1e;
+  border: 2px solid #00ff55;
+  padding: 20px;
+  border-radius: 10px;
+  z-index: 1000;
+  color: #e0ffe0;
+  width: 400px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 0 10px #00ff55;
+  position: relative;
+}
+
+.preview-box h2 {
+  margin-top: 0;
+  text-align: center;
+  color: #00ff55;
+}
+
+.preview-box button {
+  background-color: #00ff55;
+  color: #000;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.close-preview {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 20px;
+  color: #00ff55;
+  cursor: pointer;
+  font-weight: bold;
+}

@@ -142,7 +142,7 @@
     <!-- Add more categories similarly... -->
   </section>
 
-   <section class="discount-box">
+  <section class="discount-box">
       <h2>Discount</h2>
       <input type="number" id="discountValue" placeholder="Enter discount" />
       <select id="discountType">
@@ -153,7 +153,10 @@
       <p id="discountDisplay">No discount applied.</p>
     </section>
 
-    <button onclick="generateInvoice()">Generate Invoice</button>
+    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+      <button onclick="previewInvoice()">Preview</button>
+      <button onclick="generateInvoice()">Generate Invoice</button>
+    </div>
 
     <section>
       <h2>Invoice Log</h2>
@@ -169,8 +172,19 @@
         <tbody></tbody>
       </table>
     </section>
+
+    <div id="previewBox" class="preview-box" style="display: none;">
+      <span class="close-preview" onclick="closePreview()">✖</span>
+      <h2>Invoice Preview</h2>
+      <div id="previewContent"></div>
+      <div style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
+        <button onclick="confirmInvoice()">✅ Confirm and Send</button>
+        <button onclick="closePreview()">Close</button>
+      </div>
+    </div>
   </main>
 
   <script src="script.js"></script>
 </body>
 </html>
+
