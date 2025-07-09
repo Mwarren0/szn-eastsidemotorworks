@@ -23,15 +23,7 @@ function generateInvoice() {
   const categories = new Set();
   let total = 0;
   
-  // 🔄 LIMPIEZA AUTOMÁTICA DESPUÉS DE GENERAR FACTURA
-  document.getElementById("employee").value = "";
-  document.querySelectorAll(".item").forEach(item => {
-    item.querySelector(".service").checked = false;
-    item.querySelector(".quantity").value = 1;
-  });
-  document.getElementById("discountValue").value = "";
-  document.getElementById("discountDisplay").textContent = "No discount applied.";
-
+  
   // Recorrer todos los servicios seleccionados
   document.querySelectorAll(".item").forEach(item => {
     const checkbox = item.querySelector(".service");
