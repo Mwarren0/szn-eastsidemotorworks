@@ -16,7 +16,83 @@ function applyDiscount() {
   document.getElementById("discountDisplay").textContent = `Discount applied: ${display}`;
 }
 
+function generateInvoice() {
+  const invoiceData = collectInvoiceData();
+  if (!invoiceData) return;
+
+  const { employee, services, summary, discountNote, total } = invoiceData;
+  const totalText = `$${total}` + (discountNote ? ` (${discountNote})` : "");
+
+  const row = document.createElement("tr");
+  row.innerHTML = `
+    <td>${employee}</td>
+    <td>${summary}</td>
+    <td>${services.join("<br>")}</td>
+    <td>${totalText}</td>
+  `;
+  document.querySelector("#invoices tbody").appendChild(row);
+
+  sendToDiscord(invoiceData);
+  clearForm();
+}
+
 function previewInvoice() {
+  const invoiceData = collectInvoiceData();
+  if (!invoiceData) return;
+
+  const { employee, services, summary, discountNote, total } = invoiceData;
+  const totalText = `$${total}` + (discountNote ? ` (${discountNote})` : "");
+
+  const previewHTML = `
+    <p><strong>Employee:</strong> ${employee}</p>
+    <p><strong>Service Types:</strong> ${summary}</p>
+    <p><strong>Details:</strong><br>${services.join("<br>")}</p>
+    ${discountNote ? `<p><strong>Discount:</strong> ${discountNote}</p>` : ""}
+    <p><strong>Total:</strong> ${totalText}</p>
+  `;
+
+  document.getElementById("previewContent").innerHTML = previewHTML;
+  document.getElementById("previewBox").style.display = "block";
+  pendingInvoice = invoiceData;
+}
+
+function confirmInvoice() {
+  if (!pendingInvoice) return;
+
+  const { employee, services, summary, discountNote, total } = pendingInvoice;
+  const totalText = `$${total}` + (discountNote ? ` (${discountNote})` : "");
+
+  const row = document.createElement("tr");
+  row.innerHTML = `
+    <td>${employee}</td>
+    <td>${summary}</td>
+    <td>${services.join("<br>")}</td>
+    <td>${totalText}</td>
+  `;
+  document.querySelector("#invoices tbody").appendChild(row);
+
+  sendToDiscord(pendingInvoice);
+  clearForm();
+  closePreview();
+  pendingInvoice = null;
+}
+
+function closePreview() {
+  document.getElementById("previewBox").style.display = "none";
+}
+
+function clearForm() {
+  document.getElementById("employee").value = "";
+  document.querySelectorAll(".item").forEach(item => {
+    item.querySelector(".service").checked = false;
+    item.querySelector(".quantity").value = 1;
+  });
+  document.getElementById("discountValue").value = "";
+  document.getElementById("discountDisplay").textContent = "No discount applied.";
+  discountAmount = null;
+}
+
+function collectInvoiceData() {
   const employee = document.getElementById("employee").value || "Unknown";
   const services = [];
   const categories = new Set();
@@ -38,6 +114,8 @@ function previewInvoice() {
     }
   });
 
+  if (services.length === 0) return null;
+
   const summary = Array.from(categories).join(", ") || "Uncategorized";
 
   let discountNote = "";
@@ -54,20 +132,7 @@ function previewInvoice() {
     if (total < 0) total = 0;
   }
 
-  const totalText = `$${total}` + (discountNote ? ` (${discountNote})` : "");
-
-  const previewHTML = `
-    <p><strong>Employee:</strong> ${employee}</p>
-    <p><strong>Service Types:</strong> ${summary}</p>
-    <p><strong>Details:</strong><br>${services.join("<br>")}</p>
-    ${discountNote ? `<p><strong>Discount:</strong> ${discountNote}</p>` : ""}
-    <p><strong>Total:</strong> ${totalText}</p>
-  `;
-
-  document.getElementById("previewContent").innerHTML = previewHTML;
-  document.getElementById("previewBox").style.display = "block";
-
-  pendingInvoice = {
+  return {
     employee,
     services,
     summary,
@@ -76,21 +141,7 @@ function previewInvoice() {
   };
 }
 
-function confirmInvoice() {
-  if (!pendingInvoice) return;
-
-  const { employee, services, summary, discountNote, total } = pendingInvoice;
-  const totalText = `$${total}` + (discountNote ? ` (${discountNote})` : "");
-
-  const row = document.createElement("tr");
-  row.innerHTML = `
-    <td>${employee}</td>
-    <td>${summary}</td>
-    <td>${services.join("<br>")}</td>
-    <td>${totalText}</td>
-  `;
-  document.querySelector("#invoices tbody").appendChild(row);
-
+function sendToDiscord({ employee, services, summary, discountNote, total }) {
   fetch("https://discord.com/api/webhooks/1392217195953786962/rn3McMeacAiTIzjN1sNmTxF8iPYW3QDNlRpsaUFMoH61SmJl59fPgO4sjX6lQEvxzJAD", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -112,20 +163,4 @@ function confirmInvoice() {
       ]
     })
   });
-
-  document.getElementById("employee").value = "";
-  document.querySelectorAll(".item").forEach(item => {
-    item.querySelector(".service").checked = false;
-    item.querySelector(".quantity").value = 1;
-  });
-  document.getElementById("discountValue").value = "";
-  document.getElementById("discountDisplay").textContent = "No discount applied.";
-  discountAmount = null;
-  pendingInvoice = null;
-
-  closePreview();
-}
-
-function closePreview() {
-  document.getElementById("previewBox").style.display = "none";
 }
