@@ -84,8 +84,11 @@ function closePreview() {
 function clearForm() {
   document.getElementById("employee").value = "";
   document.querySelectorAll(".item").forEach(item => {
-    item.querySelector(".service").checked = false;
-    item.querySelector(".quantity").value = 1;
+    const serviceBox = item.querySelector(".service");
+    const qtyBox = item.querySelector(".quantity");
+
+    if (serviceBox) serviceBox.checked = false;
+    if (qtyBox) qtyBox.value = 1;
   });
   document.querySelector(".labor-option")?.checked = false;
   document.getElementById("discountValue").value = "";
@@ -101,21 +104,25 @@ function collectInvoiceData() {
 
   document.querySelectorAll(".item").forEach(item => {
     const checkbox = item.querySelector(".service");
-    const quantity = parseInt(item.querySelector(".quantity").value);
-    if (checkbox?.checked && quantity > 0) {
-      const label = item.querySelector("label");
-      const name = label ? label.textContent.trim() : "Unnamed Service";
-      const price = parseInt(checkbox.dataset.price);
-      const itemTotal = price * quantity;
-      services.push(`${name} ×${quantity} ($${itemTotal})`);
-      subtotal += itemTotal;
+    const qtyBox = item.querySelector(".quantity");
 
-      const category = item.closest(".category")?.querySelector("strong")?.textContent;
-      if (category) categories.add(category);
+    if (checkbox?.checked && qtyBox) {
+      const quantity = parseInt(qtyBox.value);
+      if (quantity > 0) {
+        const label = item.querySelector("label");
+        const name = label ? label.textContent.trim() : "Unnamed Service";
+        const price = parseInt(checkbox.dataset.price);
+        const itemTotal = price * quantity;
+        services.push(`${name} ×${quantity} ($${itemTotal})`);
+        subtotal += itemTotal;
+
+        const category = item.closest(".category")?.querySelector("strong")?.textContent;
+        if (category) categories.add(category);
+      }
     }
   });
 
-  if (services.length === 0) return null;
+  if (subtotal === 0) return null;
 
   let total = subtotal;
 
