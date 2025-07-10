@@ -77,7 +77,6 @@ function clearForm() {
     item.querySelector(".service")?.checked = false;
     item.querySelector(".quantity")?.value = 1;
   });
-  document.querySelector(".labor-option")?.checked = false;
   document.getElementById("discountValue").value = "";
   document.getElementById("discountDisplay").textContent = "No discount applied.";
   discountAmount = null;
@@ -113,18 +112,6 @@ function collectInvoiceData() {
 
   let total = subtotal;
 
-  // 💼 Labor charge
-  const laborChecked = document.querySelector(".labor-option")?.checked;
-  let laborCharge = 0;
-
-  if (laborChecked) {
-    laborCharge = Math.round(subtotal * 0.5);
-    services.push(`Labor (50%) → $${laborCharge}`);
-    total += laborCharge;
-  }
-
-  const summary = Array.from(categories).join(", ") || "Uncategorized";
-
   let discountNote = "";
   if (discountAmount) {
     if (discountAmount.type === "percent") {
@@ -139,11 +126,12 @@ function collectInvoiceData() {
     if (total < 0) total = 0;
   }
 
+  const summary = Array.from(categories).join(", ") || "Uncategorized";
   return { employee, services, summary, discountNote, total };
 }
 
 function sendToDiscord({ employee, services, summary, discountNote, total }) {
-  fetch("https://discord.com/api/webhooks/1392957993477210273/tRW5w15Ro9S1C8hswgmW062GMtpPdaFVcxUqbNZ6y5uYUIeQUIUGY2YzyIkqEcRyOrXm", {
+  fetch("https://discord.com/api/webhooks/TU_WEBHOOK_URL", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
