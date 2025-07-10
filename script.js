@@ -20,18 +20,7 @@ function generateInvoice() {
   const invoiceData = collectInvoiceData();
   if (!invoiceData) return;
 
-  const { employee, services, summary, discountNote, total } = invoiceData;
-  const totalText = `$${total}` + (discountNote ? ` (${discountNote})` : "");
-
-  const row = document.createElement("tr");
-  row.innerHTML = `
-    <td>${employee}</td>
-    <td>${summary}</td>
-    <td>${services.join("<br>")}</td>
-    <td>${totalText}</td>
-  `;
-  document.querySelector("#invoices tbody").appendChild(row);
-
+  renderInvoiceRow(invoiceData);
   sendToDiscord(invoiceData);
   clearForm();
 }
@@ -59,9 +48,15 @@ function previewInvoice() {
 function confirmInvoice() {
   if (!pendingInvoice) return;
 
-  const { employee, services, summary, discountNote, total } = pendingInvoice;
-  const totalText = `$${total}` + (discountNote ? ` (${discountNote})` : "");
+  renderInvoiceRow(pendingInvoice);
+  sendToDiscord(pendingInvoice);
+  clearForm();
+  closePreview();
+  pendingInvoice = null;
+}
 
+function renderInvoiceRow({ employee, summary, services, discountNote, total }) {
+  const totalText = `$${total}` + (discountNote ? ` (${discountNote})` : "");
   const row = document.createElement("tr");
   row.innerHTML = `
     <td>${employee}</td>
@@ -70,11 +65,6 @@ function confirmInvoice() {
     <td>${totalText}</td>
   `;
   document.querySelector("#invoices tbody").appendChild(row);
-
-  sendToDiscord(pendingInvoice);
-  clearForm();
-  closePreview();
-  pendingInvoice = null;
 }
 
 function closePreview() {
@@ -84,11 +74,8 @@ function closePreview() {
 function clearForm() {
   document.getElementById("employee").value = "";
   document.querySelectorAll(".item").forEach(item => {
-    const serviceBox = item.querySelector(".service");
-    const qtyBox = item.querySelector(".quantity");
-
-    if (serviceBox) serviceBox.checked = false;
-    if (qtyBox) qtyBox.value = 1;
+    item.querySelector(".service")?.checked = false;
+    item.querySelector(".quantity")?.value = 1;
   });
   document.querySelector(".labor-option")?.checked = false;
   document.getElementById("discountValue").value = "";
@@ -126,13 +113,13 @@ function collectInvoiceData() {
 
   let total = subtotal;
 
-  // Labor logic
-  const laborChecked = document.querySelector(".labor")?.checked;
+  // 💼 Labor charge
+  const laborChecked = document.querySelector(".labor-option")?.checked;
   let laborCharge = 0;
 
   if (laborChecked) {
     laborCharge = Math.round(subtotal * 0.5);
-    services.push(`Labor Charge (50%) → $${laborCharge}`);
+    services.push(`Labor (50%) → $${laborCharge}`);
     total += laborCharge;
   }
 
@@ -152,13 +139,7 @@ function collectInvoiceData() {
     if (total < 0) total = 0;
   }
 
-  return {
-    employee,
-    services,
-    summary,
-    discountNote,
-    total
-  };
+  return { employee, services, summary, discountNote, total };
 }
 
 function sendToDiscord({ employee, services, summary, discountNote, total }) {
