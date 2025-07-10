@@ -142,7 +142,7 @@ function collectInvoiceData() {
 }
 
 function sendToDiscord({ employee, services, summary, discountNote, total }) {
-  fetch("https://discord.com/api/webhooks/1392955369508044941/mygMLOew_NEHkHBOs_NxfdUtGyiFCGqtOkFFX1yB7XXMV44KLEajEZNxb6uB9a4UGrx_", {
+  fetch("https://discord.com/api/webhooks/1392957993477210273/tRW5w15Ro9S1C8hswgmW062GMtpPdaFVcxUqbNZ6y5uYUIeQUIUGY2YzyIkqEcRyOrXm", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
