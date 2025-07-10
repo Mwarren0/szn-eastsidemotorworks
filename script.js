@@ -87,6 +87,7 @@ function clearForm() {
     item.querySelector(".service").checked = false;
     item.querySelector(".quantity").value = 1;
   });
+  document.querySelector(".labor-option")?.checked = false;
   document.getElementById("discountValue").value = "";
   document.getElementById("discountDisplay").textContent = "No discount applied.";
   discountAmount = null;
@@ -96,18 +97,18 @@ function collectInvoiceData() {
   const employee = document.getElementById("employee").value || "Unknown";
   const services = [];
   const categories = new Set();
-  let total = 0;
+  let subtotal = 0;
 
   document.querySelectorAll(".item").forEach(item => {
     const checkbox = item.querySelector(".service");
     const quantity = parseInt(item.querySelector(".quantity").value);
-    if (checkbox.checked && quantity > 0) {
+    if (checkbox?.checked && quantity > 0) {
       const label = item.querySelector("label");
       const name = label ? label.textContent.trim() : "Unnamed Service";
       const price = parseInt(checkbox.dataset.price);
-      const subtotal = price * quantity;
-      services.push(`${name} ×${quantity} ($${subtotal})`);
-      total += subtotal;
+      const itemTotal = price * quantity;
+      services.push(`${name} ×${quantity} ($${itemTotal})`);
+      subtotal += itemTotal;
 
       const category = item.closest(".category")?.querySelector("strong")?.textContent;
       if (category) categories.add(category);
@@ -115,6 +116,18 @@ function collectInvoiceData() {
   });
 
   if (services.length === 0) return null;
+
+  let total = subtotal;
+
+  // Labor logic
+  const laborChecked = document.querySelector(".labor-option")?.checked;
+  let laborCharge = 0;
+
+  if (laborChecked) {
+    laborCharge = Math.round(subtotal * 0.5);
+    services.push(`Labor Charge (50%) → $${laborCharge}`);
+    total += laborCharge;
+  }
 
   const summary = Array.from(categories).join(", ") || "Uncategorized";
 
