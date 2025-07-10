@@ -127,7 +127,7 @@ function collectInvoiceData() {
   let total = subtotal;
 
   // Labor logic
-  const laborChecked = document.querySelector(".labor-option")?.checked;
+  const laborChecked = document.querySelector(".labor")?.checked;
   let laborCharge = 0;
 
   if (laborChecked) {
