@@ -23,9 +23,7 @@ h1 {
 }
 
 main {
-  display: flex;
-  justify-content: space-around;
-  margin: 20px;
+  padding: 20px;
 }
 
 section {
