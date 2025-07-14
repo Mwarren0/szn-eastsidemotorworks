@@ -20,7 +20,18 @@ function generateInvoice() {
   const invoiceData = collectInvoiceData();
   if (!invoiceData) return;
 
-  renderInvoiceRow(invoiceData);
+  const { employee, services, summary, discountNote, total } = invoiceData;
+  const totalText = `$${total}` + (discountNote ? ` (${discountNote})` : "");
+
+  const row = document.createElement("tr");
+  row.innerHTML = `
+    <td>${employee}</td>
+    <td>${summary}</td>
+    <td>${services.join("<br>")}</td>
+    <td>${totalText}</td>
+  `;
+  document.querySelector("#invoices tbody").appendChild(row);
+
   sendToDiscord(invoiceData);
   clearForm();
 }
@@ -48,15 +59,9 @@ function previewInvoice() {
 function confirmInvoice() {
   if (!pendingInvoice) return;
 
-  renderInvoiceRow(pendingInvoice);
-  sendToDiscord(pendingInvoice);
-  clearForm();
-  closePreview();
-  pendingInvoice = null;
-}
-
-function renderInvoiceRow({ employee, summary, services, discountNote, total }) {
+  const { employee, services, summary, discountNote, total } = pendingInvoice;
   const totalText = `$${total}` + (discountNote ? ` (${discountNote})` : "");
+
   const row = document.createElement("tr");
   row.innerHTML = `
     <td>${employee}</td>
@@ -65,6 +70,11 @@ function renderInvoiceRow({ employee, summary, services, discountNote, total }) 
     <td>${totalText}</td>
   `;
   document.querySelector("#invoices tbody").appendChild(row);
+
+  sendToDiscord(pendingInvoice);
+  clearForm();
+  closePreview();
+  pendingInvoice = null;
 }
 
 function closePreview() {
@@ -74,8 +84,8 @@ function closePreview() {
 function clearForm() {
   document.getElementById("employee").value = "";
   document.querySelectorAll(".item").forEach(item => {
-    item.querySelector(".service")?.checked = false;
-    item.querySelector(".quantity")?.value = 1;
+    item.querySelector(".service").checked = false;
+    item.querySelector(".quantity").value = 1;
   });
   document.getElementById("discountValue").value = "";
   document.getElementById("discountDisplay").textContent = "No discount applied.";
@@ -86,31 +96,27 @@ function collectInvoiceData() {
   const employee = document.getElementById("employee").value || "Unknown";
   const services = [];
   const categories = new Set();
-  let subtotal = 0;
+  let total = 0;
 
   document.querySelectorAll(".item").forEach(item => {
     const checkbox = item.querySelector(".service");
-    const qtyBox = item.querySelector(".quantity");
+    const quantity = parseInt(item.querySelector(".quantity").value);
+    if (checkbox.checked && quantity > 0) {
+      const label = item.querySelector("label");
+      const name = label ? label.textContent.trim() : "Unnamed Service";
+      const price = parseInt(checkbox.dataset.price);
+      const subtotal = price * quantity;
+      services.push(`${name} ×${quantity} ($${subtotal})`);
+      total += subtotal;
 
-    if (checkbox?.checked && qtyBox) {
-      const quantity = parseInt(qtyBox.value);
-      if (quantity > 0) {
-        const label = item.querySelector("label");
-        const name = label ? label.textContent.trim() : "Unnamed Service";
-        const price = parseInt(checkbox.dataset.price);
-        const itemTotal = price * quantity;
-        services.push(`${name} ×${quantity} ($${itemTotal})`);
-        subtotal += itemTotal;
-
-        const category = item.closest(".category")?.querySelector("strong")?.textContent;
-        if (category) categories.add(category);
-      }
+      const category = item.closest(".category")?.querySelector("strong")?.textContent;
+      if (category) categories.add(category);
     }
   });
 
-  if (subtotal === 0) return null;
+  if (services.length === 0) return null;
 
-  let total = subtotal;
+  const summary = Array.from(categories).join(", ") || "Uncategorized";
 
   let discountNote = "";
   if (discountAmount) {
@@ -126,12 +132,17 @@ function collectInvoiceData() {
     if (total < 0) total = 0;
   }
 
-  const summary = Array.from(categories).join(", ") || "Uncategorized";
-  return { employee, services, summary, discountNote, total };
+  return {
+    employee,
+    services,
+    summary,
+    discountNote,
+    total
+  };
 }
 
 function sendToDiscord({ employee, services, summary, discountNote, total }) {
-  fetch("https://discord.com/api/webhooks/TU_WEBHOOK_URL", {
+  fetch("https://discord.com/api/webhooks/1392217195953786962/rn3McMeacAiTIzjN1sNmTxF8iPYW3QDNlRpsaUFMoH61SmJl59fPgO4sjX6lQEvxzJAD", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
