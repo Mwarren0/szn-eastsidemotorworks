@@ -1,4 +1,5 @@
 /* === Reset === */
+/* Reset default margin and padding */
 * {
   margin: 0;
   padding: 0;
@@ -6,9 +7,9 @@
 }
 
 body {
-  font-family: 'Segoe UI', sans-serif;
-  background-color: #1c1c1c;
-  color: #e0ffe0;
+  font-family: Arial, sans-serif;
+  background-color: #1c1c1c; /* Dark grey background */
+  color: #fff; /* White text color */
 }
 
 /* === Header === */
@@ -31,7 +32,9 @@ h1 {
 
 /* === Main === */
 main {
-  padding: 20px;
+  display: flex;
+  justify-content: space-around;
+  margin: 20px;
 }
 
 /* === Section Styling === */
