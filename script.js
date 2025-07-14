@@ -97,6 +97,8 @@ function collectInvoiceData() {
   const services = [];
   const categories = new Set();
   let total = 0;
+  let baseTotal = 0;
+  let laborIncluded = false;
 
   document.querySelectorAll(".item").forEach(item => {
     const checkbox = item.querySelector(".service");
@@ -105,14 +107,29 @@ function collectInvoiceData() {
       const label = item.querySelector("label");
       const name = label ? label.textContent.trim() : "Unnamed Service";
       const price = parseInt(checkbox.dataset.price);
+      const isLabor = checkbox.classList.contains("labor-checkbox");
+
       const subtotal = price * quantity;
-      services.push(`${name} ×${quantity} ($${subtotal})`);
-      total += subtotal;
+
+      if (!isLabor) {
+        baseTotal += subtotal;
+        total += subtotal;
+        services.push(`${name} ×${quantity} ($${subtotal})`);
+      } else {
+        laborIncluded = true;
+        categories.add("Upgrades");
+      }
 
       const category = item.closest(".category")?.querySelector("strong")?.textContent;
       if (category) categories.add(category);
     }
   });
+
+  if (laborIncluded) {
+    const laborCharge = Math.round(baseTotal * 0.5);
+    total += laborCharge;
+    services.push(`Labor (50% of $${baseTotal}) = $${laborCharge}`);
+  }
 
   if (services.length === 0) return null;
 
